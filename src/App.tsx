@@ -43,7 +43,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className="">
       <h1>File Transfer App</h1>
       <p>Status: {status}</p>
     </div>
