@@ -47,7 +47,9 @@ function DeviceList({ onSelectDevice, selectedDevice }: DeviceListProps) {
         {devices.length === 0 ? (
           <TableRow>
             <TableCell colSpan={3} className="text-center">
-              No devices connected
+              <p className="h-10 flex items-center justify-center">
+                No devices connected
+              </p>
             </TableCell>
           </TableRow>
         ) : (
