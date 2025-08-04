@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { socket } from "../socket";
 import {
   Table,
   TableBody,
@@ -9,31 +7,19 @@ import {
   TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
-
-interface Device {
-  id: string;
-  name?: string;
-}
+import type { Device } from "@/hooks/useFileTransferSocket";
 
 interface DeviceListProps {
+  devices: Device[];
   onSelectDevice: (deviceId: string) => void;
   selectedDevice: string | null;
 }
 
-function DeviceList({ onSelectDevice, selectedDevice }: DeviceListProps) {
-  const [devices, setDevices] = useState<Device[]>([]);
-
-  useEffect(() => {
-    // Listen for device list updates
-    socket.on("device-list", (deviceList: Device[]) => {
-      setDevices(deviceList.filter((d) => d.id !== socket.id)); // Exclude self
-    });
-
-    return () => {
-      socket.off("device-list");
-    };
-  }, []);
-
+function DeviceList({
+  devices,
+  onSelectDevice,
+  selectedDevice,
+}: DeviceListProps) {
   return (
     <Table>
       <TableHeader>
@@ -56,13 +42,17 @@ function DeviceList({ onSelectDevice, selectedDevice }: DeviceListProps) {
           devices.map((device) => (
             <TableRow key={device.id}>
               <TableCell>{device.name || "Unnamed"}</TableCell>
-              <TableCell>{device.id.slice(0, 8)}...</TableCell>
-              <TableCell>
+              <TableCell>{device.id.slice(0, 20)}...</TableCell>
+              <TableCell className="w-[20%]">
                 <Button
-                  variant={selectedDevice === device.id ? "default" : "outline"}
-                  onClick={() => onSelectDevice(device.id)}
+                  variant={"outline"}
+                  onClick={() =>
+                    selectedDevice === device.id
+                      ? onSelectDevice("")
+                      : onSelectDevice(device.id)
+                  }
                 >
-                  {selectedDevice === device.id ? "Selected" : "Select"}
+                  {selectedDevice === device.id ? "Deselect" : "Select"}
                 </Button>
               </TableCell>
             </TableRow>
